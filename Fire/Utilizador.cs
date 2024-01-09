@@ -10,7 +10,11 @@ namespace Fire
     {
         public String _name { get; set; } 
         public string _Password { get; set; }
-        public DateTime _BirthDate;
-
+        public DateOnly _BirthDate;
+        public double MontanteTotalPatrimonio;
+        public double dispesamediamensal;
+        public double randimentoexpectavel;
+        public double inflação;
+        public int longevidade;
     }
 }
