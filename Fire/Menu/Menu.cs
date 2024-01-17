@@ -1,6 +1,10 @@
-﻿using System;
+﻿using CsvHelper;
+using CsvHelper.Configuration.Attributes;
+using Fire.Files;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +17,14 @@ namespace Fire.Menu
     {
         public static void MainMenu()
         {
+            IFile.basecategory = AdminFile.LoadBaseDir();
+            if (AdminFile.LoadBaseDir() == "Toconfig")
+            {
+                Console.WriteLine("Por favor, configure a diretoria base!");
+                Console.WriteLine("-----------------------------------------");
+                Adminmenu();
+                IFile.basecategory = AdminFile.LoadBaseDir();
+            }
             BemVindo();
             while (true)
             {
@@ -45,7 +57,7 @@ namespace Fire.Menu
                             UserMenu(utilizador);
                             break;
                         }
-                        else if (utilizador._name == "Admin" && utilizador._Password == "Admin")
+                        else if (utilizador._name == "Admin" && utilizador._password == "Admin")
                             Adminmenu();
                         break;
 
@@ -59,6 +71,7 @@ namespace Fire.Menu
                     continue;
                 }
             }
+
             static void BemVindo()
             {
                 Console.WriteLine("Bem vindo á Fire!");
@@ -106,15 +119,46 @@ namespace Fire.Menu
             {
                 UserEdit(user);
             }
+            else if (x == 2)
+            {
+                UserExpenses();
+            }
         }
         static void Adminmenu()
         {
-            Console.WriteLine("Bem-Vindo Admin!");
-            Console.WriteLine("-----------------");
-            Console.WriteLine("Escolha uma opção:");
-            Console.WriteLine(" 1 - Definir diretoria base\r\n" +
-                " 2 - Importar Categorias\r\n" +
-                " 3- Estatísticas de todos os utilizadores\r\n");
+            while (true)
+            {
+                Console.WriteLine("Bem-Vindo Admin!");
+                Console.WriteLine("-----------------");
+                Console.WriteLine("Escolha uma opção:");
+                Console.WriteLine(" 1 - Definir diretoria base\r\n" +
+                    " 2 - Importar Categorias\r\n" +
+                    " 3- Estatísticas de todos os utilizadores\r\n" +
+                "4- Voltar");
+                int x = Console2.Readint();
+                if (x == 1)
+                {
+                    AdminFile file = new AdminFile();
+                    file.SetBaseCategory();
+                    Console2.StringSleep("Estamos prontos para começar!", 2);
+                    Console.Clear();
+                    continue;
+                }
+                if (x == 2)
+                {
+                    CategoriesFile file = new CategoriesFile("expenseses-categories", ".txt");
+                    file.ImportCategories(file.filename, file.extension);
+                    Console2.StringSleep("Categorias do utilizador importadas com sucesso!", 2);
+                    continue;
+                }
+                if (x == 3)
+                {
+                }
+                if (x == 4)
+                {
+                    break;
+                }
+            }
         }
 
 
@@ -126,93 +170,51 @@ namespace Fire.Menu
                 string comando = "fire set -user";
                 Console.WriteLine($"Utilize o comando {comando} --help) para informaçoes sobre os comandos");
                 Console.WriteLine("Insira o comando!");
-                string command = Console.ReadLine();
-                var command2 = command.Split(" ");
-                string x = command2[0] + command2[1] + command2[2];
+
+                var command = Console.ReadLine().Split(" ");
+                var atributes = UserEditorFunc.AtributesParse(command);
+                command = UserEditorFunc.CommandParse(command, atributes);
+                string x = string.Join("", command);
                 if (x.Equals(comando.Replace(" ", ""), StringComparison.OrdinalIgnoreCase))
                 {
                     Console.Clear();
-                    string[] atributes = command2;
-                    int aux = 0;
-                    for (int i = 3; i < command2.Length; i++)
-                    {
-                        atributes[aux] = command2[i].Replace("--", "");
-                        aux++;
-                    }
-                    for (int i = 0; i < command2.Length; i += 2)
-                    {
-                        for (int j = 1; j < command2.Length; j += 2)
-                        {
-                            switch (atributes[i])
-                            {
-                                case "help":
-                                    Console.WriteLine("fire set-user \r\n" +
-                                        "--name Nome Investidor\r\n" +
-                                        "--pwd password\r\n" +
-                                        "--db data de nascimento usando o formato dd-mm-yyyy ou yyyy-mm-dd\r\n" +
-                                        "--assets valor total património\r\n--expenses média mensal de despesas\r\n" +
-                                        "--yield taxa de retorno esperada [0, 1]\r\n" +
-                                        "--inflation taxa de inflação [0,1]\r\n" +
-                                        "--ttl longevidade prevista em anos");
-                                    Console.ReadLine();
-                                    Console.Clear();
-                                    break;
-                                case "name":
-                                    user._name = command2[j];
-                                    Console.WriteLine("Nome alterado com sucesso!");
-                                    Thread.Sleep(1000);
-                                    i = command2.Length;
-                                    j = command2.Length;
-                                    break;
-                                case "password":
-                                    user._Password = command2[j];
-                                    break;
-                                case "db":
-                                    DateOnly date;
-                                    if (DateOnly.TryParse(command2[j], out date))
-                                    {
-                                        user._BirthDate = date;
-                                        break;
-                                    }
-                                    else Console.WriteLine("Formato de data ivalido, formato correto : yyyy-MM.dd");
-                                    continue;
-
-                            }
-
-                        }
-
-
-                    }
-
-
+                    UserEditorFunc.CommandApplier(user, atributes);
                 }
                 else
                 {
-                    Console.WriteLine("Comando invalido! insira de novo");
+                    Console2.StringSleep("Comando invalido! insira de novo", 1);
                     continue;
 
                 }
-
-
             }
 
         }
+        public static void UserExpenses()
+        {
+            DespesaFile despesaFile = new DespesaFile("Despesas", ".csv");
+            List<Despesa> despesauser = despesaFile.ImportDespesa();
+            decimal x = 0;
+            if (despesauser == null)
+            {
+                Console.WriteLine("Voce não tem despesas associadas ao sistema");
+            }
+            else
+            {
+                foreach (var despesa in despesauser)
+                {
+                    Console.WriteLine($"Data : {despesa.data} \n" +
+                        $"Categoria : {despesa.categoria}\n" +
+                        $"Sub categoria: {despesa.subcategoria}\n" +
+                        $"Benificiario: {despesa.beneficiario}\n" +
+                        $"Descrição : {despesa.descricao}\n" +
+                        $"Valor : {despesa.valor}");
+                    Console2.StringSleep("------------------", 1);
+                    x += despesa.valor;
+
+                }
+                Console.WriteLine($"O valor total de despesas foi {x}");
+
+            }
+        }
     }
 }
-
-//if (command == "fire set - user--help") ;
-//{
-//    Console.Clear();
-//    Console.WriteLine("fire set-user \r\n" +
-//        "--name Nome Investidor\r\n" +
-//        "--pwd password\r\n" +
-//        "--db data de nascimento usando o formato dd-mm-yyyy ou yyyy-mm-dd\r\n" +
-//        "--assets valor total património\r\n" +
-//        "--expenses média mensal de despesas\r\n" +
-//        "--yield taxa de retorno esperada [0, 1]\r\n" +
-//        "--inflation taxa de inflação [0,1]\r\n" +
-//        "--ttl longevidade prevista em anos\r\n");
-//    Console.ReadLine();
-//    Console.Clear();
-//    continue;
-//}

@@ -21,11 +21,10 @@ namespace Fire
             Console.WriteLine(message);
             return Readint();
         }
-        public static decimal ReadDecimal()
+        public static double ReadDecimal(string input)
         {
-            String input = Console.ReadLine();
-            decimal value = Convert.ToInt32(input);
-            return (decimal)value;
+            var value = Convert.ToDouble(input);
+            return value;
         }
         public static int Readint2()
         {
@@ -73,6 +72,11 @@ namespace Fire
                 return true;
             }
             else return false;
+        }
+        public static void StringSleep(string messagem, int segundos)
+        {
+            Console.WriteLine(messagem);
+            Thread.Sleep(segundos * 1000);
         }
     }
 }

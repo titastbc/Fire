@@ -9,12 +9,12 @@ namespace Fire
     public class Utilizador
     {
         public String _name { get; set; } 
-        public string _Password { get; set; }
-        public DateOnly _BirthDate;
-        public double MontanteTotalPatrimonio;
-        public double dispesamediamensal;
-        public double randimentoexpectavel;
-        public double inflação;
-        public int longevidade;
+        public string _password { get; set; }
+        public DateOnly _birthDate { get; set; }
+        public double montanteTotalPatrimonio { get; set; } 
+        public double dispesamediamensal { get; set; }
+        public double rendimentoexpectavel { get; set; }
+        public double inflação { get; set; }
+        public int longevidade { get; set; }
     }
 }
