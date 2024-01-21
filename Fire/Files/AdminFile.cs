@@ -31,7 +31,7 @@ namespace Fire.Files
 
         public void SetBaseCategory()
         {
-            string basefiles = "C:\\Fire\\Fire\\Fire\\bin\\Debug\\net8.0";
+            string basefiles = "C:\\Fire\\bin\\Debug\\net8.0";
             while (true)
             {
                 Console.WriteLine("Insira a categoria base");
@@ -54,7 +54,7 @@ namespace Fire.Files
         }
         public static string LoadBaseDir()
         {
-            var txt = File.ReadAllText("C:\\Fire\\Fire\\Fire\\bin\\Debug\\net8.0" + "\\BaseDir.txt");
+            var txt = File.ReadAllText("C:\\Fire\\bin\\Debug\\net8.0" + "\\BaseDir.txt");
             return txt;
         }
     }
