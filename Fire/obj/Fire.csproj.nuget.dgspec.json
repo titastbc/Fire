@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Fire\\Fire\\Fire\\Fire.csproj": {}
+    "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\Fire.csproj": {}
   },
   "projects": {
-    "C:\\Fire\\Fire\\Fire\\Fire.csproj": {
+    "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\Fire.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Fire\\Fire\\Fire\\Fire.csproj",
+        "projectUniqueName": "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\Fire.csproj",
         "projectName": "Fire",
-        "projectPath": "C:\\Fire\\Fire\\Fire\\Fire.csproj",
+        "projectPath": "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\Fire.csproj",
         "packagesPath": "C:\\Users\\crist\\.nuget\\packages\\",
-        "outputPath": "C:\\Fire\\Fire\\Fire\\obj\\",
+        "outputPath": "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\crist\\AppData\\Roaming\\NuGet\\NuGet.Config",

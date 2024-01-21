@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "CKNomVQb0TzvOImBo3pqEF9gyZpoFzdQ6ddBXborgl9Tfbf8OFQ9MGV5daIpFWPIxprdjS4YhsXh/jhEgZpx+Q==",
+  "dgSpecHash": "MFUFX7KlLY+0J1eguSstaOhQMznOH0fYXdMKKZQS67esw0ADnLL6V24W5DVVqc7CRiSmGhFdIGlT85R+s6JrYQ==",
   "success": true,
-  "projectFilePath": "C:\\Fire\\Fire\\Fire\\Fire.csproj",
+  "projectFilePath": "C:\\Users\\crist\\OneDrive\\Documentos\\Fire\\Fire\\Fire.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\crist\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
     "C:\\Users\\crist\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
