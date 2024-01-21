@@ -15,6 +15,6 @@ namespace Fire
         public double dispesamediamensal { get; set; }
         public double rendimentoexpectavel { get; set; }
         public double inflação { get; set; }
-        public int longevidade { get; set; }
+        public int longevidade { get; set; } = 100;
     }
 }

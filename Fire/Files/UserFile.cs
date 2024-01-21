@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -49,6 +50,16 @@ namespace Fire.Files
                 File.Delete(delete.FullPath);
             }
             else return;
+        }
+
+        public static void ImportUser()
+        {
+            List<Utilizador> users = new List<Utilizador>();
+           String[] filenames = Directory.GetFiles(basecategory + "\\Fire\\FireUserInfo");
+            foreach (String filename in filenames)
+            {
+                var txt = File.ReadAllLines(filename);
+            }
         }
     }
 }

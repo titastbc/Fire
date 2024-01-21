@@ -20,14 +20,14 @@ namespace Fire.Menu
             IFile.basecategory = AdminFile.LoadBaseDir();
             if (AdminFile.LoadBaseDir() == "Toconfig")
             {
-                Console.WriteLine("Por favor, configure a diretoria base!");
+                Console.WriteLine("Por favor, configure a diretoria base e importe as despesas!");
                 Console.WriteLine("-----------------------------------------");
                 Adminmenu();
-                IFile.basecategory = AdminFile.LoadBaseDir();
             }
             BemVindo();
             while (true)
             {
+                Console.Clear();
                 int x = RegLog();
                 if (x == 1)
                 {
@@ -55,11 +55,11 @@ namespace Fire.Menu
                         if (utilizador._name != "Admin")
                         {
                             UserMenu(utilizador);
-                            break;
+                            continue;
                         }
                         else if (utilizador._name == "Admin" && utilizador._password == "Admin")
                             Adminmenu();
-                        break;
+                        continue;
 
                     }
                 }
@@ -110,18 +110,33 @@ namespace Fire.Menu
         }
         static void UserMenu(Utilizador user)
         {
-            Console.WriteLine($"Bem-Vindo {user._name}");
-            Console.WriteLine("-----------------");
-            Console.WriteLine("Escolha uma opção:");
-            Console.WriteLine("1 - Editar Utilizador\r\n 2 - Importar despesas\r\n 3 - Dashboard ");
-            int x = Console2.Readint2();
-            if (x == 1)
+            while (true)
             {
-                UserEdit(user);
-            }
-            else if (x == 2)
-            {
-                UserExpenses();
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Clear();
+                Console.WriteLine($"Bem-Vindo {user._name}");
+                Console.WriteLine("-----------------");
+                Console.WriteLine("Escolha uma opção:");
+                Console.WriteLine("1 - Editar Utilizador\r\n 2 - Importar despesas\r\n 3 - Dashboard \r\n 4 - LogOut");
+                int x = Console2.Readint2();
+                if (x == 1)
+                {
+                    UserEdit(user);
+                    continue;
+                }
+                else if (x == 2)
+                {
+                    UserExpenses();
+                }
+                else if (x == 3)
+                {
+                    Console.Clear();
+                    DashBoard(user);
+                }
+                else if (x == 4)
+                {
+                    break;
+                }
             }
         }
         static void Adminmenu()
@@ -134,13 +149,14 @@ namespace Fire.Menu
                 Console.WriteLine(" 1 - Definir diretoria base\r\n" +
                     " 2 - Importar Categorias\r\n" +
                     " 3- Estatísticas de todos os utilizadores\r\n" +
-                "4- Voltar");
+                    "4- LogOut");
                 int x = Console2.Readint();
                 if (x == 1)
                 {
                     AdminFile file = new AdminFile();
                     file.SetBaseCategory();
-                    Console2.StringSleep("Estamos prontos para começar!", 2);
+                    IFile.basecategory = AdminFile.LoadBaseDir();
+                    Console2.StringSleep("Diretoria base alterada com sucesso!", 2);
                     Console.Clear();
                     continue;
                 }
@@ -153,6 +169,7 @@ namespace Fire.Menu
                 }
                 if (x == 3)
                 {
+                    UserStats();
                 }
                 if (x == 4)
                 {
@@ -162,15 +179,13 @@ namespace Fire.Menu
         }
 
 
-        public static void UserEdit(Utilizador user)
+        public static void UserEdit(Utilizador user, int quit = 0)
         {
             while (true)
             {
-                Console.Clear();
                 string comando = "fire set -user";
                 Console.WriteLine($"Utilize o comando {comando} --help) para informaçoes sobre os comandos");
                 Console.WriteLine("Insira o comando!");
-
                 var command = Console.ReadLine().Split(" ");
                 var atributes = UserEditorFunc.AtributesParse(command);
                 command = UserEditorFunc.CommandParse(command, atributes);
@@ -186,6 +201,15 @@ namespace Fire.Menu
                     continue;
 
                 }
+
+                Console.Clear();
+                if (quit == 1)
+                    break;
+                Console.WriteLine("Deseja continuar a edição?\n" +
+                "1- continuar\n" +
+                "Prima qualquer botao para voltar ao menu pricipal\n");
+                if (Console2.Readint2() == 1) { Console.Clear(); continue; }
+                else break;
             }
 
         }
@@ -213,8 +237,90 @@ namespace Fire.Menu
 
                 }
                 Console.WriteLine($"O valor total de despesas foi {x}");
+                Console.ReadLine();
 
             }
         }
+
+        public static void DashBoard(Utilizador user)
+        {
+            while (true)
+            {
+                Console.Clear();
+                int dashboard = 1;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("------------- Bem vindo ao seu dashboard -------------");
+                if (user.dispesamediamensal == 0 || user.inflação == 0 || user.rendimentoexpectavel == 0)
+                {
+                    Console.WriteLine("Edite os seus dados primeiro no menu de editar o user.");
+                    Console.WriteLine("Prentende editar agora?");
+                    if (Console.ReadLine().ToLower() == "sim")
+                    {
+                        UserEdit(user);
+                        continue;
+                    }
+                    else
+                    {
+
+                        break;
+                    }
+                }
+
+                Console.WriteLine("Sobre si:\n" +
+                    $"O seu patrimonio atual é de : {user.montanteTotalPatrimonio} Euros \n" +
+                    $"As despesas mensais são de : {user.dispesamediamensal} Euros\n" +
+                    $"a inflação inserida por si é de : {user.inflação}%\n" +
+                    $"Longevidade esperada : ate aos {user.longevidade} anos\n" +
+                    $"Taxa de rendibilidade esperada : {user.rendimentoexpectavel}%");
+
+                Console.WriteLine();
+                var mensal = Calculator.CalcularAposentadoria(user);
+                if (mensal < 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\"Você talvez precise reconsiderar sua aposentadoria. " +
+                    "Valor mensal insuficiente.\"");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("O valor mensal que pode gastar se se reformar agora é de "
+                    + $"{mensal:F2} Euros");
+
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine();
+                Console.WriteLine($"O seu racio de independencia financeira é de {mensal / user.dispesamediamensal:F2}");
+                Console.WriteLine();
+                Console.WriteLine("Estes são os seus dados.\n");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("-------------------------");
+
+                UserEdit(user, dashboard);
+
+
+            }
+        }
+
+
+        public static void UserStats()
+        {
+            var names = Directory.GetFiles(IFile.basecategory + "\\Fire\\FireUserInfo");
+            foreach (var name in names)
+            {
+                if (name.Contains(".json"))
+                    {
+                    UserFile stats = new UserFile(name, "");
+                    Utilizador user = stats.GetFromFile();
+                    Console.WriteLine("Nome: " + user._name);
+                    Console.WriteLine($"Montante total patrimonio :  {user.montanteTotalPatrimonio:F2}");
+                    Console.WriteLine($"Valor mensal ate se reformar: {Calculator.CalcularAposentadoria(user):F2}");
+                    Console.WriteLine($"Racio financeiro : { Calculator.CalcularAposentadoria(user) / user.dispesamediamensal:F2}");
+                    Console.WriteLine("---------------------------");
+
+                }
+            }
+        }
     }
+
 }
